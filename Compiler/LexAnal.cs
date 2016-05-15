@@ -50,9 +50,9 @@ namespace Compiler
             using (_sr = new StreamReader(file))
             {
                 _result = new List<int>();
-                while (_sr.Peek() != -1)
+                _curChar = (char)_sr.Read();
+                while (_curChar != -1)
                 {
-                    _curChar = (char)_sr.Read();
                     if (!TryGetIdentifier())
                     {
                         if (!TryGetConst())
@@ -101,7 +101,7 @@ namespace Compiler
                     _curChar = (char)_sr.Read();
                     lex += _curChar;
                 }
-                _curChar = (char) _sr.Peek();
+                _curChar = (char) _sr.Read();
                 int offset = _keys.Check(lex) ? _keys.AddItem(lex) : _idents.AddItem(lex);
                 _result.Add(offset);
                 return true;
@@ -116,10 +116,10 @@ namespace Compiler
                 string lex = _curChar.ToString();
                 while (_sr.Peek()!=-1 && _sr.Peek() >= '0' && _sr.Peek() <= '9')
                 {
-                    _curChar = (char)_sr.Peek();
+                    _curChar = (char)_sr.Read();
                     lex += _curChar;
                 }
-                _curChar = (char) _sr.Peek();
+                _curChar = (char) _sr.Read();
                 int offset = _consts.AddItem(lex);
                 _result.Add(offset);
                 return true;
