@@ -34,18 +34,17 @@ namespace Compiler
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     _file = dlg.FileName;
-                    var files = dlg.FileNames;
                 }
 
             }
-            _lexAnal = new LexAnal(_path);
+            _lexAnal = new LexAnal(_path, _file);
             textBlock.Text = _lexAnal.Program;
             Compile.IsEnabled = true;
         }
 
         private async void Compile_OnClick(object sender, RoutedEventArgs e)
         {
-            _lexAnal.Compile();
+            _lexAnal.Compile(_file);
             textBlock1.Text = _lexAnal.ResultText;
             Save.IsEnabled = true;
         }
