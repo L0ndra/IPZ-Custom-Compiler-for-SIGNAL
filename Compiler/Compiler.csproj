@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CodeGen.cs" />
     <Compile Include="SyntAnal.cs" />
     <Compile Include="Table.cs" />
     <Page Include="MainWindow.xaml">
