@@ -47,7 +47,7 @@ namespace Compiler
                     var value = tree.InnerTree[2].InnerTree[0].Name;
                     if (procedureTable.Contains(variable))
                     {
-                        Result.Append("Name already used for procedure");
+                        Result.Append("Name already used for procedure\n");
                     }
                     else
                     {
@@ -57,22 +57,44 @@ namespace Compiler
                         }
                     }
                         variavleTable.Add(variable);
-                    Result.Append("mov ax," + value + "\n");
+                    Result.Append("mov eax," + value + "\n");
                     Result.Append("mov " + variable + ",ax\n");
                 }
-                if (tree.InnerTree[1].Name == "actual-arguments")
+                if (tree.InnerTree[1].Name == "actual-arguments\n")
                 {
-                    
+                    PushArguments(tree.InnerTree[1]);
+                    var procedure = tree.InnerTree[0].InnerTree[0].Name;
+                    if (variavleTable.Contains(procedure))
+                    {
+                        Result.Append("this name already used as variable name\n");
+                    }
+                    procedureTable.Add(procedure);
+                    Result.Append("call " + procedure + "\n");
                 }
             }
         }
 
         private void PushArguments(Tree tree)
         {
-            do
+            while (tree.InnerTree.Count > 1)
             {
-
-            } while (tree.InnerTree[2].Name == "actual-arguments-list");
+                var variable = tree.InnerTree[1].Name;
+                if (procedureTable.Contains(variable))
+                {
+                    Result.Append("Name already used for procedure");
+                }
+                else
+                {
+                    foreach (var el in linkedVariables.Where(el => el.Name == variable && el.Status == 2))
+                    {
+                        Result.Append("Variable can't be read");
+                    }
+                }
+                variavleTable.Add(variable);
+                Result.Append("mov eax," + variable + "\n");
+                Result.Append("push eax\n");
+                tree = tree.InnerTree[2];
+            }
         } 
     }
 }
