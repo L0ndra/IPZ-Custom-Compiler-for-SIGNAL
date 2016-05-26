@@ -8,11 +8,11 @@ namespace Compiler
     public class LexAnal
     {
         public string Program { get; set; }
-        private readonly Table _simpleDet;
-        private readonly Table _compDet;
-        private readonly Table _keys;
-        private readonly Table _consts;
-        private readonly Table _idents;
+        public readonly Table _simpleDet;
+        public readonly Table _compDet;
+        public readonly Table _keys;
+        public readonly Table _consts;
+        public readonly Table _idents;
         private int simplOffset = 0;
         private int compOffset = 300;
         private int keysOffset = 400;
@@ -26,7 +26,7 @@ namespace Compiler
         private const string CommentStart = "(*";
         private const string CommentEnd = "*)";
         private readonly char[] _ws = {' ', '\r', '\n', '\t', '\v', '\f'};
-        private List<int> _result;
+        public List<int> ResultList { get; set; }
         public string ResultText { get; set; }
         public bool Error { get; set; }
         private StreamReader _sr;
@@ -49,9 +49,9 @@ namespace Compiler
         {
             using (_sr = new StreamReader(file))
             {
-                _result = new List<int>();
+                ResultList = new List<int>();
                 _curChar = (char)_sr.Read();
-                while (_curChar != -1)
+                while (_curChar != '\uffff')
                 {
                     if (!TryGetIdentifier())
                     {
@@ -66,6 +66,7 @@ namespace Compiler
                                         if (!TryGetSimplDet())
                                         {
                                             GenerateResultText();
+                                            ResultText += "Error";
                                             ResultText += _sr.ReadToEnd();
                                             Error = true;
                                             return;
@@ -87,6 +88,9 @@ namespace Compiler
             {
                 sw.Write(ResultText);
             }
+            _simpleDet.Save(folder + "/sdet.txt");
+            _compDet.Save(folder + "/cdet.txt");
+            _keys.Save(folder + "/keys.txt");
             _consts.Save(folder+"/const.txt");
             _idents.Save(folder+"/idents.txt");
         }
@@ -96,14 +100,14 @@ namespace Compiler
             if (_curChar >= 'A' && _curChar <= 'Z')
             {
                 string lex = _curChar.ToString();
-                while ((_sr.Peek() != -1) && ((_sr.Peek() >= 'A' && _sr.Peek() <= 'Z') || (_sr.Peek() >= '0' && _sr.Peek() <= '9')))
+                while (((char)_sr.Peek() != '\uffff') && ((_sr.Peek() >= 'A' && _sr.Peek() <= 'Z') || (_sr.Peek() >= '0' && _sr.Peek() <= '9')))
                 {
                     _curChar = (char)_sr.Read();
                     lex += _curChar;
                 }
                 _curChar = (char) _sr.Read();
                 int offset = _keys.Check(lex) ? _keys.AddItem(lex) : _idents.AddItem(lex);
-                _result.Add(offset);
+                ResultList.Add(offset);
                 return true;
             }
             return false;
@@ -114,14 +118,14 @@ namespace Compiler
             if (_curChar > '0' && _curChar < '9')
             {
                 string lex = _curChar.ToString();
-                while (_sr.Peek()!=-1 && _sr.Peek() >= '0' && _sr.Peek() <= '9')
+                while ((char)_sr.Peek()!= '\uffff' && _sr.Peek() >= '0' && _sr.Peek() <= '9')
                 {
                     _curChar = (char)_sr.Read();
                     lex += _curChar;
                 }
                 _curChar = (char) _sr.Read();
                 int offset = _consts.AddItem(lex);
-                _result.Add(offset);
+                ResultList.Add(offset);
                 return true;
             }
             return false;
@@ -129,12 +133,12 @@ namespace Compiler
 
         public bool TryGetCompDet()
         {
-            if (_sr.Peek() != -1)
+            if ((char)_sr.Peek() != '\uffff')
             {
                 string lex = _curChar.ToString() + (char)_sr.Peek();
                 if (_compDet.Check(lex))
                 {
-                    _result.Add(_compDet.AddItem(lex));
+                    ResultList.Add(_compDet.AddItem(lex));
                     _curChar = (char) _sr.Read();
                     _curChar = (char)_sr.Read();
                     return true;
@@ -147,7 +151,7 @@ namespace Compiler
         {
             if (_simpleDet.Check(_curChar.ToString()))
             {
-                _result.Add(_simpleDet.AddItem(_curChar.ToString()));
+                ResultList.Add(_simpleDet.AddItem(_curChar.ToString()));
                 _curChar = (char)_sr.Read();
                 return true;
             }
@@ -166,13 +170,13 @@ namespace Compiler
 
         public bool TryDeleteComment()
         {
-            if (_sr.Peek() != -1)
+            if ((char)_sr.Peek() != '\uffff')
             {
                 string lex = _curChar.ToString() + (char)_sr.Peek();
                 if (lex == CommentStart)
                 {
                     _curChar = (char) _sr.Read();
-                    while (_sr.Peek() != -1)
+                    while ((char)_sr.Peek() != '\uffff')
                     {
                         lex = _curChar.ToString() + (char)_sr.Peek();
                         if (lex == CommentEnd)
@@ -190,7 +194,7 @@ namespace Compiler
 
         public void GenerateResultText()
         {
-            foreach (var lex in _result)
+            foreach (var lex in ResultList)
             {
                 ResultText += lex+" ";
             }

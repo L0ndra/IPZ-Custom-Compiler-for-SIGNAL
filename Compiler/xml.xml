@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<signal-program>
+  PROGRAM
+  <identifier>
+    PROG
+  </identifier>
+  ;
+  <block>
+    BEGIN
+    <statement-list>
+      <statement>
+        LINK
+        <identifier>
+          L
+        </identifier>
+        ,
+        <unsigned-integer>
+          7
+        </unsigned-integer>
+        ;
+      </statement>
+      <statement-list>
+        <statement>
+          IN
+          <unsigned-integer>
+            14
+          </unsigned-integer>
+          ;
+        </statement>
+        <statement-list>
+          <statement>
+            RETURN
+            ;
+          </statement>
+          <statement-list>
+            statement
+            empty
+          </statement-list>
+        </statement-list>
+      </statement-list>
+    </statement-list>
+    END
+  </block>
+  ;
+</signal-program>
+
+
+
+

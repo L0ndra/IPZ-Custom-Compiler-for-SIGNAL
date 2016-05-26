@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Compiler"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
+        Title="MainWindow" Height="405.2" Width="525">
+    <Grid Margin="0,0,0.4,-2.2">
         <Button x:Name="Browse" Content="Browse" HorizontalAlignment="Left" Height="24" Margin="24,10,0,0" VerticalAlignment="Top" Width="150" Click="Browse_OnClick"/>
         <Button x:Name="Compile" Content="Compile" HorizontalAlignment="Left" Height="24" Margin="179,10,0,0" VerticalAlignment="Top" Width="150" IsEnabled="False" Click="Compile_OnClick"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="24,40,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="271" Width="219"/>
         <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="261,40,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="271" Width="230"/>
         <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="334,10,0,0" VerticalAlignment="Top" Width="157" RenderTransformOrigin="-0.221,0.969" Height="24" IsEnabled="False" Click="Save_OnClick"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="24,343,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="467" Foreground="Red"/>
 
     </Grid>
 </Window>
